@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#145da0">
+<meta name="mobile-web-app-capable" content="yes">
+<title>QUẦY THUỐC MAI XUÂN – Đặt hàng</title>
+<style>
+*{box-sizing:border-box} body{margin:0;font-family:Arial,sans-serif;background:#f4f6f8;color:#202124}
+.container{max-width:1150px;margin:0 auto;padding:20px}
+h1{margin:0 0 6px;color:#145da0}.sub{color:#666;margin-bottom:20px}
+.card{background:white;border-radius:12px;padding:18px;box-shadow:0 2px 10px #00000010;margin-bottom:16px}
+.row{display:grid;grid-template-columns:1.2fr 2fr .7fr 1fr .7fr auto;gap:10px;align-items:end}
+label{font-size:13px;font-weight:bold;display:block;margin-bottom:6px}
+input,button,select{height:42px;border:1px solid #ccd2d8;border-radius:8px;padding:0 12px;font-size:15px}
+input:focus,select:focus{outline:2px solid #b7d7f5;border-color:#2b7bbb}
+button{cursor:pointer;border:0;background:#1677c8;color:white;font-weight:bold}
+button:hover{filter:brightness(.95)} .secondary{background:#6c757d}.danger{background:#dc3545}.success{background:#198754}
+.info{background:#eef7ff;border:1px solid #cfe8ff;border-radius:8px;padding:12px;margin-top:10px;display:none}
+.searchwrap{position:relative}.suggest{position:absolute;z-index:10;left:0;right:0;top:69px;background:#fff;border:1px solid #ccd2d8;border-radius:8px;max-height:280px;overflow:auto;display:none;box-shadow:0 5px 15px #0002}
+.suggest div{padding:10px 12px;border-bottom:1px solid #eee;cursor:pointer}.suggest div:hover{background:#eef7ff}
+table{width:100%;border-collapse:collapse}th,td{padding:10px 8px;border-bottom:1px solid #eee;text-align:left;font-size:14px}th{background:#f0f4f8}
+.num{text-align:right;white-space:nowrap}.qty{width:75px;height:34px}.total{font-size:20px;font-weight:bold;text-align:right;margin-top:15px}
+.actions{display:flex;gap:8px;justify-content:flex-end;margin-top:15px;flex-wrap:wrap}
+.empty{text-align:center;color:#777;padding:25px}.small{font-size:12px;color:#777}
+@media(max-width:800px){.row{grid-template-columns:1fr 1fr}.row button{grid-column:span 2}.container{padding:10px}th,td{font-size:12px;padding:7px 5px}.hide-mobile{display:none}}
+
+/* ===== LOGIN & ADMIN ===== */
+.login-overlay{position:fixed;inset:0;background:linear-gradient(135deg,#145da0,#1677c8);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px}
+.login-box{width:min(420px,100%);background:#fff;border-radius:16px;padding:28px;box-shadow:0 20px 60px #0004}
+.login-box h2{margin:0 0 6px;color:#145da0}.login-box p{color:#666;margin:0 0 20px}
+.login-box input{width:100%;margin-bottom:12px}
+.login-box button{width:100%;margin-top:4px}
+.login-error{color:#dc3545;font-size:13px;min-height:18px;margin-top:10px}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.user-badge{font-size:13px;color:#555}
+.admin-panel{display:none}
+.admin-grid{display:grid;grid-template-columns:1.1fr 2fr .7fr 1fr auto;gap:10px;align-items:end}
+.admin-table-wrap{overflow:auto;margin-top:15px}
+.admin-table input{width:100%;height:34px}
+.admin-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.nav-buttons{display:flex;gap:8px;flex-wrap:wrap}
+.hidden{display:none!important}
+@media(max-width:800px){.admin-grid{grid-template-columns:1fr 1fr}.admin-grid button{grid-column:span 2}}
+
+
+.user-management{display:none}
+.role-badge{display:inline-block;padding:4px 9px;border-radius:999px;background:#eef7ff;color:#145da0;font-weight:bold;font-size:12px}
+.admin-note{background:#fff8e1;border:1px solid #ffe08a;padding:10px;border-radius:8px;margin-top:10px;font-size:13px}
+.user-form{display:grid;grid-template-columns:1fr 1fr 1fr 1fr auto;gap:10px;align-items:end;margin-top:15px}
+.user-table-wrap{overflow:auto;margin-top:15px}
+@media(max-width:800px){.user-form{grid-template-columns:1fr 1fr}.user-form button{grid-column:span 2}}
+
+
+.home-btn{background:#0d6efd}
+.home-btn:hover{filter:brightness(.95)}
+
+/* ===== MOBILE / MODERN UI ===== */
+:root{
+  --primary:#145da0;
+  --primary2:#1677c8;
+  --bg:#f5f7fb;
+  --card:#ffffff;
+  --text:#172033;
+  --muted:#667085;
+  --border:#e4e7ec;
+  --radius:16px;
+}
+html{scroll-behavior:smooth}
+body{
+  background:linear-gradient(180deg,#eef6ff 0,#f7f9fc 180px,#f5f7fb 100%);
+  color:var(--text);
+}
+.container{max-width:1180px;padding:16px}
+.card{
+  border:1px solid rgba(20,93,160,.08);
+  border-radius:var(--radius);
+  box-shadow:0 6px 24px rgba(16,24,40,.07);
+}
+.topbar{gap:14px}
+.topbar h1{font-size:clamp(20px,4vw,30px);line-height:1.25}
+.sub{font-size:14px}
+.nav-buttons{justify-content:flex-end}
+.nav-buttons button{min-height:42px}
+input,button,select{min-height:44px}
+button{transition:transform .12s ease,box-shadow .12s ease}
+button:active{transform:scale(.98)}
+table{min-width:720px}
+.admin-table{min-width:760px}
+.admin-table-wrap,.user-table-wrap{border-radius:12px}
+.suggest{top:74px;border-radius:12px}
+.login-overlay{background:linear-gradient(145deg,#0f4d86,#1684dc)}
+.login-box{border-radius:20px;padding:24px}
+.login-box input{min-height:48px}
+.login-box button{min-height:48px}
+
+@media(max-width:800px){
+  body{background:#f5f7fb}
+  .container{padding:10px}
+  .card{padding:14px;margin-bottom:12px;border-radius:14px}
+  .topbar{align-items:flex-start}
+  .topbar>div:first-child{width:100%}
+  .nav-buttons{
+    width:100%;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+  }
+  .nav-buttons .user-badge{
+    grid-column:1/-1;
+    padding:2px 2px 4px;
+  }
+  .nav-buttons button{width:100%}
+  #adminBtn,#userManageBtn{display:none}
+  .row,.admin-grid,.user-form{
+    grid-template-columns:1fr !important;
+    gap:9px;
+  }
+  .row button,.admin-grid button,.user-form button{grid-column:auto !important;width:100%}
+  label{font-size:12px}
+  input,select,button{font-size:15px}
+  .searchwrap{width:100%}
+  .suggest{top:73px;max-height:260px}
+  .info{font-size:13px}
+  .total{font-size:20px;padding-top:4px}
+  .actions{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+  }
+  .actions button{width:100%}
+  .actions button:last-child{grid-column:1/-1}
+  .admin-actions{display:grid;grid-template-columns:1fr 1fr}
+  .admin-actions button{width:100%}
+  .admin-actions button:nth-child(3){grid-column:1/-1}
+  .admin-table-wrap,.user-table-wrap{
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    margin-left:-4px;margin-right:-4px;
+  }
+  th,td{font-size:13px;padding:9px 7px}
+  .qty{width:70px}
+  .login-overlay{padding:14px}
+  .login-box{padding:20px}
+  .login-box h2{font-size:21px}
+  .login-box .small{line-height:1.55}
+}
+
+@media(max-width:420px){
+  .container{padding:7px}
+  .card{padding:12px}
+  .topbar h1{font-size:20px}
+  .sub{font-size:13px}
+  .nav-buttons{grid-template-columns:1fr}
+  .nav-buttons .user-badge{grid-column:auto}
+  .actions,.admin-actions{grid-template-columns:1fr}
+  .actions button:last-child,.admin-actions button:nth-child(3){grid-column:auto}
+  .login-box h2{font-size:19px}
+}
+
+/* Touch-friendly scrollbars */
+.admin-table-wrap::-webkit-scrollbar,.user-table-wrap::-webkit-scrollbar,
+#order>div::-webkit-scrollbar{height:7px}
+.admin-table-wrap::-webkit-scrollbar-thumb,.user-table-wrap::-webkit-scrollbar-thumb,
+#order>div::-webkit-scrollbar-thumb{background:#c8d1dc;border-radius:99px}
+
+</style>
+
+<style>
+.price-toggle-wrap{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin:0 0 12px;flex-wrap:wrap}
+.price-toggle{background:#495057}
+.price-toggle.active{background:#198754}
+.hide-price .price-col,.hide-total .total-col{display:none!important}
+@media(max-width:800px){.price-toggle-wrap{justify-content:stretch}.price-toggle{flex:1}}
+</style>
+
+<style>
+.creator-line{text-align:right;margin-top:18px;font-size:14px;line-height:1.6}
+.creator-line .creator-name{font-weight:bold;min-width:180px;display:inline-block;border-bottom:1px solid #999;text-align:center;padding:0 8px}
+</style>
+</head>
+<body>
+
+<div id="loginOverlay" class="login-overlay">
+  <div class="login-box">
+    <h2>🔐 QUẦY THUỐC MAI XUÂN</h2>
+    <p>Đăng nhập hệ thống đặt hàng & quản lý dữ liệu</p>
+    <input id="loginUser" placeholder="Tên đăng nhập" autocomplete="username">
+    <input id="loginPass" type="password" placeholder="Mật khẩu" autocomplete="current-password">
+    <button onclick="login()">Đăng nhập</button>
+    <div id="loginError" class="login-error"></div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="card">
+    <div class="topbar">
+      <div>
+        <h1>🛒 QUẦY THUỐC MAI XUÂN ĐẶT HÀNG</h1>
+        <div class="sub">Tra cứu danh mục và lập đơn hàng nhanh</div>
+      </div>
+      <div class="nav-buttons">
+        <span class="user-badge" id="currentUser"></span>
+        <button class="secondary home-btn" onclick="goHome()">⌂ Trang chủ</button>
+        <button class="secondary" id="adminBtn" onclick="showAdmin()">⚙ Quản lý dữ liệu</button>
+        <button class="secondary" id="userManageBtn" onclick="showUserManagement()">👥 Quản lý tài khoản</button>
+        <button class="danger" onclick="logout()">Đăng xuất</button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="searchwrap">
+        <label>Mã hàng / tên hàng</label>
+        <input id="search" autocomplete="off" placeholder="Ví dụ: AMLOSTD">
+        <div id="suggest" class="suggest"></div>
+      </div>
+      <div>
+        <label>Tên hàng</label>
+        <input id="name" readonly>
+      </div>
+      <div>
+        <label>ĐVT</label>
+        <input id="unit" readonly>
+      </div>
+      <div>
+        <label>Đơn giá</label>
+        <input id="price" readonly>
+      </div>
+      <div>
+        <label>Số lượng</label>
+        <input id="qty" type="number" min="1" value="1">
+      </div>
+      <button onclick="addItem()">+ Thêm vào đơn</button>
+    </div>
+    <div id="info" class="info"></div>
+  </div>
+
+
+
+  <div class="card user-management" id="userManagement">
+    <div class="topbar">
+      <div>
+        <h3>👥 Quản lý tài khoản</h3>
+        <div class="small">Chỉ tài khoản Admin mới được thêm, sửa, xóa tài khoản.</div>
+      </div>
+      <button class="secondary" onclick="hideUserManagement()">Đóng</button>
+    </div>
+
+    <div class="user-form">
+      <div><label>Tên đăng nhập</label><input id="newUsername" placeholder="VD: nhanvien01"></div>
+      <div><label>Full name</label><input id="newFullName" placeholder="Họ và tên"></div>
+      <div><label>Mật khẩu</label><input id="newPassword" type="password" placeholder="Mật khẩu"></div>
+      <div><label>Quyền</label>
+        <select id="newRole"><option value="user">User thường</option><option value="admin">Admin</option></select>
+      </div>
+      <button onclick="saveUser()">+ Thêm tài khoản</button>
+    </div>
+    <div class="admin-note">⚠ User thường chỉ được đặt hàng và xem dữ liệu. User thường không thể quản lý danh mục hoặc tài khoản.</div>
+
+    <div class="user-table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>Tên đăng nhập</th><th>Full name</th><th>Quyền</th><th>Thao tác</th></tr></thead>
+        <tbody id="userList"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card admin-panel" id="adminPanel">
+    <div class="topbar">
+      <div>
+        <h3>⚙ Quản lý danh mục hàng</h3>
+        <div class="small">Thêm, sửa, xóa sản phẩm. Dữ liệu được lưu trên trình duyệt này.</div>
+      </div>
+      <button class="secondary" onclick="hideAdmin()">Đóng</button>
+    </div>
+
+    <div class="admin-grid" style="margin-top:15px">
+      <div><label>Mã hàng</label><input id="adminCode" placeholder="VD: AMLOSTD"></div>
+      <div><label>Tên hàng</label><input id="adminName" placeholder="Tên sản phẩm"></div>
+      <div><label>ĐVT</label><input id="adminUnit" placeholder="Hộp"></div>
+      <div><label>Đơn giá</label><input id="adminPrice" type="number" min="0" placeholder="23000"></div>
+      <button onclick="saveProduct()">+ Thêm / cập nhật</button>
+    </div>
+
+    <div class="admin-actions">
+      <button class="secondary" onclick="resetAdminForm()">Làm mới</button>
+      <button onclick="exportProducts()">Xuất danh mục CSV</button>
+      <button onclick="document.getElementById('importFile').click()">Nhập danh mục CSV</button>
+      <input id="importFile" type="file" accept=".csv,text/csv" class="hidden" onchange="importProducts(event)">
+      <button class="danger" onclick="resetProducts()">Khôi phục danh mục gốc</button>
+    </div>
+
+    <div class="admin-table-wrap">
+      <table class="admin-table">
+        <thead><tr><th>#</th><th>Mã hàng</th><th>Tên hàng</th><th>ĐVT</th><th>Đơn giá</th><th>Thao tác</th></tr></thead>
+        <tbody id="adminProducts"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="price-toggle-wrap">
+      <button id="togglePriceBtn" class="price-toggle active" onclick="togglePrice()">👁 Ẩn Đơn giá</button>
+      <button id="toggleTotalBtn" class="price-toggle active" onclick="toggleTotal()">👁 Ẩn Thành tiền</button>
+    </div>
+    <h3>📋 Đơn đặt hàng</h3>
+    <div id="order"></div>
+    <div class="total" id="grandTotal">Tổng: 0 đ</div>
+    <div class="actions">
+      <button class="secondary" onclick="clearOrder()">Xóa đơn</button>
+      <button class="success" onclick="exportCSV()">Xuất Excel (CSV)</button>
+      <button onclick="printOrder()">🖨 In đơn hàng</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const defaultProducts = [{"code": "MARL", "name": "20B", "unit": "Hộp", "price": 77000}, {"code": "3BPV", "name": "3B Phúc Vinh", "unit": "Hộp", "price": 52000}, {"code": "7MAUHQ", "name": "7 Màu Hàn Quốc", "unit": "Tuýp", "price": 20500}, {"code": "ACETYLH", "name": "Acetylcystein 200Mg", "unit": "Hộp", "price": 56000}, {"code": "ACY800", "name": "Acyclovir 800 STD", "unit": "H/50 Viên", "price": 192000}, {"code": "ADPV", "name": "AD Phúc Vinh", "unit": "Hộp", "price": 40000}, {"code": "ALAXAN", "name": "ALAXAN TAB B/10BLX10", "unit": "Hộp", "price": 14000}, {"code": "HAPA325H", "name": "Alimemazin", "unit": "Hộp", "price": 12000}, {"code": "SLPD", "name": "Alimemazin HG", "unit": "Hộp", "price": 12000}, {"code": "ALLO", "name": "Allopurinol", "unit": "Hộp", "price": 29000}, {"code": "ACETYLH", "name": "Alpha NIC", "unit": "Hộp", "price": 305000}, {"code": "AMLOSTD", "name": "Amlodipin 5Mg (Stada)", "unit": "Hộp", "price": 23000}, {"code": "AMLODMC", "name": "Amlodipin DMC", "unit": "Hộp", "price": 18500}, {"code": "AMPI500", "name": "Ampicyclin 500", "unit": "Hộp", "price": 83000}, {"code": "ANGE", "name": "Angela", "unit": "Chai", "price": 730000}, {"code": "ATUSV", "name": "AT Ibu ống", "unit": "Hộp", "price": 72000}, {"code": "AZYH", "name": "Azytech (Hộp)", "unit": "Hộp", "price": 25000}, {"code": "BHHL20", "name": "Bạch hổ hoạt lạc cao 20g", "unit": "Hộp", "price": 25000}, {"code": "BAOHK", "name": "Bao HK", "unit": "Hộp", "price": 98000}, {"code": "BARL", "name": "Bar >", "unit": "C/180 Viên", "price": 67000}, {"code": "BCNZIL", "name": "BCN Zilgo", "unit": "Hộp", "price": 26000}, {"code": "BERO", "name": "Beroca", "unit": "Tuýp", "price": 67500}, {"code": "BETHAC", "name": "Bethametasone", "unit": "Chai", "price": 52000}, {"code": "AMPI500", "name": "Biolac Vĩ", "unit": "Hộp", "price": 51000}, {"code": "BIPC", "name": "Bip - C", "unit": "Hộp", "price": 80000}, {"code": "BIPPC", "name": "Bipp Gummy C dây/40 t/1200", "unit": "Dây", "price": 1000}, {"code": "BIPPCA", "name": "Bipp Gummy Calci dây/80 t/2400", "unit": "Dây", "price": 10000}, {"code": "BOCALEX", "name": "Bocalex Multi tuyp/20 t/3200", "unit": "Tuýp", "price": 40000}, {"code": "BOGANANG", "name": "Boganic (Caps)", "unit": "Hộp", "price": 93000}, {"code": "BOSTA", "name": "Bostacef", "unit": "Hộp", "price": 38000}, {"code": "BROM8H", "name": "Bromhexin 8", "unit": "Hộp", "price": 20000}, {"code": "CORN", "name": "Calci - Corbier < (Mẫu Mới)", "unit": "Hộp", "price": 156000}, {"code": "CORL", "name": "Calci Corbier 10ml thuốc", "unit": "Hộp", "price": 187000}, {"code": "HASANS", "name": "Calci Hasan (Sủi)", "unit": "Tuýp", "price": 46000}, {"code": "BOSSUI", "name": "Calci Sủi Boston", "unit": "Tuýp", "price": 49000}, {"code": "CORBEX5", "name": "CALCIUM CORBIERE EXTRA 3SUPx10 5ML VN", "unit": "Hộp", "price": 165000}, {"code": "CAOBH", "name": "Cao Bạch Hổ", "unit": "H/12 Chai", "price": 278000}, {"code": "ECOSIP", "name": "Cao dán nóng Ecosip Plaster H20gói", "unit": "Hộp", "price": 17000}, {"code": "SALO40M", "name": "Cao dán Salonpas 40 miếng", "unit": "Hộp", "price": 60000}, {"code": "IMOPCL", "name": "Cao Ích Mẫu OPC >", "unit": "Chai", "price": 51000}, {"code": "CARBONV", "name": "CARBO NAM VIỆT", "unit": "Cọc", "price": 14000}, {"code": "CARBO", "name": "Carbomango (Giá Lên) (X)", "unit": "L/10 Chai", "price": 109000}, {"code": "CEDIT", "name": "Ceditus", "unit": "Hộp", "price": 94000}, {"code": "CEFADRO", "name": "Cefadroxil 500 Ấn", "unit": "Hộp", "price": 130000}, {"code": "CEFADROB", "name": "Cefadroxil 500 Boston", "unit": "Hộp", "price": 215000}, {"code": "CEFI100G", "name": "Cefixim 100 Gói Ong", "unit": "Hộp", "price": 29000}, {"code": "CELEC", "name": "Celecoxide 200 (Chai ĐN)", "unit": "C/100 Viên", "price": 55000}, {"code": "CEPO100G", "name": "Cepodoxim 100 (Gói)", "unit": "Hộp", "price": 29000}, {"code": "CEPO200", "name": "Cepodoxim 200 Mg VPC", "unit": "Hộp", "price": 29000}, {"code": "CETAN", "name": "Cetaphil <", "unit": "Chai", "price": 111000}, {"code": "CETAGSC", "name": "CETAPHIL GENTLE SKIN CLEANSER 125ML", "unit": "Lọ", "price": 140000}, {"code": "CINAVDF", "name": "Cinarizin VDF", "unit": "Hộp", "price": 19000}, {"code": "COLDI", "name": "Coldi - B", "unit": "Chai", "price": 26500}, {"code": "COMNR", "name": "Cốm Bổ < Rẻ", "unit": "L/10 Chai", "price": 47000}, {"code": "COMT", "name": "Cốm Thỏ", "unit": "Bịch", "price": 25000}, {"code": "CON70VP", "name": "Cồn 70 độ VP (60ml)", "unit": "Cọc", "price": 5000}, {"code": "CON90VP", "name": "Cồn 90 độ VP (60ml) - Xanh", "unit": "Cọc", "price": 5000}, {"code": "Boric", "name": "Cồn Boric Cam", "unit": "L/10 Chai", "price": 70000}, {"code": "CONTRA", "name": "Contractubex", "unit": "Tuýp", "price": 155000}, {"code": "CORBPL10", "name": "CORBIERE CALCIUM PLUS 3SUPx10 10ML_VN", "unit": "Hộp", "price": 205000}, {"code": "COZZ", "name": "COZZ CANDY HỘP/100 t/5000", "unit": "Hộp", "price": 60000}, {"code": "DHX", "name": "Dạ Hương Xanh", "unit": "Chai", "price": 35000}, {"code": "DAUTT30", "name": "Dầu cù là Thiên thảo 30g", "unit": "Lọ", "price": 37000}, {"code": "DGCGAU", "name": "Dầu gội chống gàu ", "unit": "Lọ", "price": 85000}, {"code": "DAUHQ", "name": "Dầu Hàn Quốc", "unit": "Chai", "price": 65000}, {"code": "KDOPCL", "name": "Dầu KD OPC > (Giá Mới 72K)", "unit": "Vĩ", "price": 71000}, {"code": "DAUTS10", "name": "Dầu nóng Trường Sơn 10ml", "unit": "Hộp", "price": 25000}, {"code": "DAUPLN", "name": "Dầu phật linh 1,5ml", "unit": "Hộp", "price": 10000}, {"code": "DAUPLL", "name": "Dầu phật linh 5ml", "unit": "Hộp", "price": 22000}, {"code": "SINL", "name": "Dầu Sin 24Ml", "unit": "Chai", "price": 77000}, {"code": "SINN", "name": "Dầu Sin 3Ml", "unit": "Hộp", "price": 226000}, {"code": "THAIL", "name": "Dầu Thái >", "unit": "L/6 Chai", "price": 185000}, {"code": "THAIN", "name": "Dầu Thái <", "unit": "L/12 Chai", "price": 199000}, {"code": "DAUTT12", "name": "Dầu thiên thảo 12ml", "unit": "Hộp", "price": 28000}, {"code": "DECOLF", "name": "DECOLGEN FORTE (TAB B/30BLX4)", "unit": "Hộp", "price": 6000}, {"code": "DECU", "name": "Decumar (Mới) SRM", "unit": "Tuýp", "price": 79000}, {"code": "DENI", "name": "DENICOL", "unit": "Lọ", "price": 23000}, {"code": "DIC75H", "name": "Diclofenac 75Mg", "unit": "H/100 Viên", "price": 27000}, {"code": "DIMENTPC", "name": "Dimenhydrinat (TPC)", "unit": "Hộp", "price": 53000}, {"code": "HOPH", "name": "Dogwazin Caps", "unit": "Chai", "price": 30000}, {"code": "DOXY", "name": "Doxycyclin 100Mg", "unit": "Hộp", "price": 65000}, {"code": "DROS", "name": "Drosperin 0.03", "unit": "Hộp", "price": 171000}, {"code": "MILIAN", "name": "DUNG DỊCH MILIAN", "unit": "Cọc", "price": 10000}, {"code": "DHTOAND", "name": "Dung dịch vệ sinh phụ nữ Dạ Hương chàm sóc toàn diện 100ml", "unit": "Lọ", "price": 42000}, {"code": "DUONGB", "name": "Đường Bắp", "unit": "Hộp", "price": 48000}, {"code": "DUPHA", "name": "Duphalac", "unit": "Hộp", "price": 139000}, {"code": "DUPHASAC", "name": "DUPHALAC 10G/15ML SACHETS 20'S", "unit": "Hộp", "price": 165000}, {"code": "EDOZG", "name": "Edoz gói/2gr h/24 t/3456", "unit": "Hộp", "price": 2000}, {"code": "EDOZ", "name": "Edozkid", "unit": "Hộp", "price": 33000}, {"code": "EFFEBOS", "name": "Effe - Palramax Sủi 325", "unit": "Hộp", "price": 28000}, {"code": "EFFE150D", "name": "Efferalgal 150 Sup", "unit": "Hộp", "price": 27000}, {"code": "EFFE500", "name": "Efferalgal 500 Sủi", "unit": "Hộp", "price": 46000}, {"code": "EFFE500T", "name": "EFFERALGAN 500MG BOX/4 STRIPS X 4", "unit": "Hộp", "price": 4000}, {"code": "ENALA5", "name": "Enalapril 10Mg STD (Tây Nhầm)", "unit": "Hộp", "price": 93000}, {"code": "ENAT400", "name": "ENAT 400;400IU", "unit": "Hộp", "price": 125000}, {"code": "ENTEROG", "name": "Enterogermina gut defense OTC 2 tỷ bào tử/5ml hộp 20 ống x 5ml Sanofi", "unit": "Hộp", "price": 175000}, {"code": "ENTER", "name": "Enterogymena", "unit": "Hộp", "price": 153000}, {"code": "ESKA", "name": "Eska", "unit": "Chai", "price": 22500}, {"code": "ESO40", "name": "Esoprazol 40", "unit": "Hộp", "price": 65000}, {"code": "EUGIX", "name": "Eugica - Xanh", "unit": "Hộp", "price": 63000}, {"code": "FEFA60", "name": "Fefasdin 60", "unit": "Hộp", "price": 350000}, {"code": "FLUSTD", "name": "Fluconazol STD", "unit": "Hộp", "price": 12000}, {"code": "FUGA", "name": "Fugacar", "unit": "Hộp", "price": 22500}, {"code": "FUGAT1", "name": "Fugacar (tablet) 500mg tab B/1", "unit": "Hộp", "price": 27000}, {"code": "GACL", "name": "Gạc Y Tế > (Đông Fa)", "unit": "Bịch", "price": 6000}, {"code": "GANGVGM", "name": "Găng tay y tế Latex có bột Vglove 5.0g size M", "unit": "Hộp", "price": 95000}, {"code": "GANGVGS", "name": "Găng tay y tế Latex có bột Vglove 5.0g size S", "unit": "Hộp", "price": 95000}, {"code": "GAUMS", "name": "Gấu Misa", "unit": "Tuýp", "price": 31500}, {"code": "GAVISCON", "name": "GAVISCON SUSPENSION B/24 SAC X 10ML", "unit": "Hộp", "price": 7000}, {"code": "GINKGOB6", "name": "Ginkgo Biloba 120 Plus Magie B6", "unit": "Chai", "price": 95000}, {"code": "GIOTT", "name": "Gió Thiên Thảo", "unit": "Hộp", "price": 295000}, {"code": "VITAC", "name": "Gluco C (MKF)", "unit": "Hộp", "price": 183000}, {"code": "GLUCO850VN", "name": "Glucofast 850Mg (Mebiphar)", "unit": "Hộp", "price": 32000}, {"code": "GLUCOPH", "name": "GLUCOPHAGE TAB 500MG 50'S", "unit": "Hộp", "price": 15000}, {"code": "GLUCOSA", "name": "GLUCOSAMIN (500*)", "unit": "Hộp", "price": 40000}, {"code": "GON25", "name": "Gòn 25 Gr", "unit": "Bịch", "price": 4200}, {"code": "GYNO250", "name": "Gynofa 250 MP", "unit": "Lọ", "price": 25000}, {"code": "GYNOLL", "name": "Gynofar >> (500ml)", "unit": "C/500ml", "price": 32000}, {"code": "GYNO500", "name": "Gynofar-500ml MP", "unit": "Lọ", "price": 35000}, {"code": "HAGIFEN", "name": "Hagifen v/10 h/100 t/9600", "unit": "Hộp", "price": 6000}, {"code": "HAMETG", "name": "Hamett gói/3.8gr h/24 t/1728", "unit": "Hộp", "price": 2500}, {"code": "HAPA150", "name": "Hapacol 150mg", "unit": "Hộp", "price": 34000}, {"code": "HAPA250", "name": "Hapacol 250mg", "unit": "Hộp", "price": 40000}, {"code": "HAPA250", "name": "Hapacol 250mg", "unit": "Hộp", "price": 39000}, {"code": "HAPA325H", "name": "Hapacol 325 (Vĩ)", "unit": "Hộp", "price": 27000}, {"code": "HAPA500C", "name": "Hapacol 500 Vàng đậm- nhạt c/100 t/12600", "unit": "Chai", "price": 45000}, {"code": "HAPA650EX", "name": "Hapacol 650Mg Extra", "unit": "Hộp", "price": 52000}, {"code": "HAPABLU", "name": "Hapacol Blue v/10 h/100 t/9600", "unit": "Hộp", "price": 5000}, {"code": "HAPAEVA", "name": "Hapacol Eva v/5 h/50 t/4800", "unit": "Hộp", "price": 4000}, {"code": "HATI", "name": "Hatitux (Gói)", "unit": "Hộp", "price": 35000}, {"code": "HITTD", "name": "Hít Thái Đỏ", "unit": "Dây", "price": 93000}, {"code": "HOAS", "name": "Ho Astes (Mới - Xanh)", "unit": "Chai", "price": 39000}, {"code": "HOBP", "name": "Ho Bổ Phế", "unit": "Chai", "price": 46000}, {"code": "PROS", "name": "Ho Prospan", "unit": "Chai", "price": 89000}, {"code": "HHTPC", "name": "Hoạt Huyết DN (TPC) (Gia Mới 108)", "unit": "Hộp", "price": 93000}, {"code": "HHNN", "name": "Hoạt Huyết Nhất Nhất", "unit": "Hộp", "price": 127000}, {"code": "HUTM", "name": "Hút Mũi", "unit": "Cây", "price": 13500}, {"code": "IBUPA", "name": "Ibuparavic", "unit": "Hộp", "price": 72000}, {"code": "IMVOPCL", "name": "Ích Mẫu Viên OPC >", "unit": "Hộp", "price": 55000}, {"code": "IDOLC", "name": "Idoltavic (Chai)", "unit": "Chai", "price": 63000}, {"code": "JASUC", "name": "Jasunny", "unit": "Chai", "price": 46000}, {"code": "KAMI", "name": "Kamistad", "unit": "Tuýp", "price": 33000}, {"code": "KEGY", "name": "Kegynan", "unit": "Hộp", "price": 31000}, {"code": "YOOSUN", "name": "Kem bôi da Yoosun Rau má (25g) Việt Nam", "unit": "Tuýp", "price": 30000}, {"code": "NGHETD", "name": "Kem Nghệ TD", "unit": "Tuýp", "price": 22500}, {"code": "KEMNC", "name": "Kem Ngọc Châu", "unit": "Tuýp", "price": 44000}, {"code": "SALGEL", "name": "Kem Xanh", "unit": "Tuýp", "price": 14000}, {"code": "KEOT", "name": "Kẹo Thử", "unit": "B/10 Con", "price": 23000}, {"code": "KTDGOLD", "name": "Khương Thảo Đan Gold hộp 30 viên", "unit": "Lọ", "price": 185000}, {"code": "KL", "name": "Kim Linh", "unit": "Hộp", "price": 224000}, {"code": "KTTOPC", "name": "Kim Tiền Thảo OPC", "unit": "Chai", "price": 61500}, {"code": "KLA1G", "name": "Klamentin 1Gr", "unit": "Hộp", "price": 99000}, {"code": "KLA625", "name": "Klamentin 625", "unit": "Hộp", "price": 58000}, {"code": "KREM", "name": "Kremil - S", "unit": "Hộp", "price": 104000}, {"code": "LACOF250", "name": "LACTACYD DDVSPN ODOR FRESH 250ML ( Xanh lá tràu)", "unit": "Chai", "price": 65000}, {"code": "LACLT", "name": "Lactacyd Lá Trầu <", "unit": "Chai", "price": 65000}, {"code": "LACEM250", "name": "LACTACYD STG EXTRA MILKY 250ML", "unit": "Lọ", "price": 95000}, {"code": "LACEM500", "name": "LACTACYD STG EXTRA MILKY 500ML", "unit": "Lọ", "price": 170000}, {"code": "LACGC250", "name": "LACTACYD STG GENTLE CARE 250ML", "unit": "Lọ", "price": 65000}, {"code": "LACBBL", "name": "Lactacyl BB >", "unit": "Chai", "price": 79500}, {"code": "LACBBL", "name": "Lactacyl BB > Vòi", "unit": "Chai", "price": 145000}, {"code": "LACPKL", "name": "Lactacyl PK >", "unit": "Chai", "price": 79000}, {"code": "LIPID10", "name": "Lipidtad 10mg", "unit": "Hộp", "price": 49000}, {"code": "LIS250", "name": "Listerin 250Ml", "unit": "Chai", "price": 37000}, {"code": "LOMA", "name": "Lomax", "unit": "Hộp", "price": 235000}, {"code": "MGB6COR", "name": "Magne B6 Corbiere Sanofi (h/50v)", "unit": "Hộp", "price": 22000}, {"code": "MGB6RE", "name": "Magne B6 Rẻ", "unit": "Hộp", "price": 21000}, {"code": "MGB6T", "name": "Magne B6 Sanofi", "unit": "Hộp", "price": 101000}, {"code": "MARL", "name": "Marvelon (3 Vỉ) (Giá Mới 229)", "unit": "Hộp", "price": 223000}, {"code": "MEFESTL", "name": "MEFENAMIC Acid STELLA 500mg(C/100V)-VN", "unit": "Lọ", "price": 70000}, {"code": "MEFECMKF", "name": "Mefenamic Chai (MKF)", "unit": "Chai", "price": 48000}, {"code": "MELO15", "name": "Meloxicam 15 (US)", "unit": "Hộp", "price": 32000}, {"code": "MERCI", "name": "Mercilon", "unit": "Hộp", "price": 85000}, {"code": "MER850", "name": "Merformin 850 STD", "unit": "Hộp", "price": 55000}, {"code": "METHY4", "name": "Methyl - Prednisolon 4 (KH)", "unit": "H/100 Viên", "price": 34000}, {"code": "HOPH", "name": "Methyl 4", "unit": "Chai", "price": 280000}, {"code": "METHY16", "name": "Methylprednislon 16 (KH)", "unit": "H/100 Viên", "price": 83000}, {"code": "MICFA", "name": "Micfasol (T/Nam)", "unit": "Hộp", "price": 204000}, {"code": "MICZABL", "name": "MICZA-BLUE", "unit": "Hộp", "price": 75000}, {"code": "HAYACHI", "name": "Miếng dán giảm đau hiệu quả lên đến 12H Hayachi Tiger", "unit": "Hộp", "price": 14000}, {"code": "MODO", "name": "Modom - S (HG)", "unit": "Hộp", "price": 35000}, {"code": "NAPHA", "name": "Naphacogyl", "unit": "Hộp", "price": 28000}, {"code": "NACLT", "name": "Natri - Clorid (Pharmadic)", "unit": "L/10 Chai", "price": 33000}, {"code": "NACLMAT", "name": "Natri Clorid 0,9% Mắt - Pharmedic", "unit": "Cọc", "price": 37000}, {"code": "NATRI1L", "name": "Natri Cloride (1 Lít)", "unit": "T/15 Chai", "price": 105000}, {"code": "NAUTA", "name": "NAUTAMINE", "unit": "Hộp", "price": 14000}, {"code": "NEWC", "name": "Newchoi", "unit": "Hộp", "price": 246000}, {"code": "NGUA1V", "name": "Ngừa 1 Viên", "unit": "L/20 Hộp", "price": 80000}, {"code": "NOSPA", "name": "No - Spa", "unit": "Hộp", "price": 47000}, {"code": "NOAT", "name": "Noatamin VDF >", "unit": "Hộp", "price": 41000}, {"code": "NYSVmk", "name": "Nystatin (Viên mk)", "unit": "Hộp", "price": 20000}, {"code": "NYSV", "name": "Nystatin (Viên)", "unit": "Hộp", "price": 18000}, {"code": "NYSR", "name": "Nystatin Gói", "unit": "Hộp", "price": 17000}, {"code": "OMEKH", "name": "Omeprazol (KH - 1000 Viên)", "unit": "Chai", "price": 270000}, {"code": "OMEKH", "name": "Omeprazol (Khánh Hòa)", "unit": "C/1000 Viên", "price": 245000}, {"code": "OMEAN", "name": "Omeprazol Ấn", "unit": "Hộp", "price": 32000}, {"code": "GACL", "name": "Oracortia Gói", "unit": "Bịch", "price": 10000}, {"code": "OSLA", "name": "Osla", "unit": "Chai", "price": 20000}, {"code": "OSLA15", "name": "Osla (15 ml), Việt Nam, (1 lọ/hộp)", "unit": "Hộp", "price": 24000}, {"code": "PARAC", "name": "Paracetamol (Caps)", "unit": "C/500 Viên", "price": 125000}, {"code": "PARARE", "name": "Paracetamol (T/Nam)", "unit": "Hộp", "price": 31000}, {"code": "PENIX", "name": "Pennixilin (Xám)", "unit": "Vĩ", "price": 9500}, {"code": "PHOSPHA", "name": "Phosphalugel sanofi (hộp/26gói/20gram)", "unit": "Hộp", "price": 6000}, {"code": "PBD", "name": "Phosphatgel (Bình Định)", "unit": "Hộp", "price": 62000}, {"code": "POLYGY", "name": "Polygynax Đặt", "unit": "Hộp", "price": 157000}, {"code": "POVI8", "name": "POVIDINE 10% 8ml Bl/10", "unit": "Cọc", "price": 10000}, {"code": "POVIT", "name": "Povidine Pharmedic (Giá Mới 83K)", "unit": "L/10 Chai", "price": 80000}, {"code": "PROSP100", "name": "Prospan Cough Syrup 100ml", "unit": "Lọ", "price": 95000}, {"code": "QUERT", "name": "Que Rụng Trứng", "unit": "Hộp", "price": 65000}, {"code": "QUIC", "name": "Quic - Strip", "unit": "Hộp", "price": 45000}, {"code": "REFRESH", "name": "REFRESH TEARS 15ML", "unit": "Lọ", "price": 85000}, {"code": "RHI", "name": "Rhinex", "unit": "L/10 Chai", "price": 53000}, {"code": "RIGE", "name": "Rigevedon (21+7)", "unit": "Hộp", "price": 65000}, {"code": "SLP5", "name": "Salonpas (5 x 40)", "unit": "Hộp", "price": 255000}, {"code": "SAMTHTW3", "name": "Sâm nhung bổ thận TW3; Chai 30v", "unit": "Lọ", "price": 165000}, {"code": "SAMTW3", "name": "Sâm Nhung TW3", "unit": "Chai", "price": 150000}, {"code": "SELL", "name": "Selsun >", "unit": "Chai", "price": 63000}, {"code": "SEN", "name": "Sensecool", "unit": "L/12 Hộp", "price": 280000}, {"code": "SHEL", "name": "Shema Hồng >", "unit": "Chai", "price": 38000}, {"code": "SIANG3", "name": "SIANG PURE OIL FORMULA I LOAI 3CC", "unit": "Hộp", "price": 20000}, {"code": "SIANG7", "name": "Siang Pure Oil Formula I loại 7cc", "unit": "Hộp", "price": 32000}, {"code": "SORBT", "name": "Sorbitol Đỏ Rẻ", "unit": "Hộp", "price": 19000}, {"code": "SORBSTD", "name": "Sorbitol STADA 5 g (H/20);(Đơn vị quy đổi)", "unit": "Hộp", "price": 55000}, {"code": "SOS", "name": "Soslac G3", "unit": "Tuýp", "price": 24000}, {"code": "SUBA", "name": "Subac", "unit": "Tuýp", "price": 137000}, {"code": "SUNA", "name": "Sunapred 20", "unit": "Chai", "price": 25000}, {"code": "TAMLLE", "name": "Tâm Bông > (Gỗ)", "unit": "Bịch", "price": 58000}, {"code": "AMPI500", "name": "Tâm Cung Orantana", "unit": "Hộp", "price": 195000}, {"code": "TANGANIL", "name": "TANGANIL 500MG COMP B/30", "unit": "Hộp", "price": 50000}, {"code": "GACL", "name": "Tây Trang KA Hồng", "unit": "Bịch", "price": 24000}, {"code": "TELMI", "name": "Telmisartan 40Mg", "unit": "Hộp", "price": 87500}, {"code": "TETRAMO", "name": "Tetracyclin PD", "unit": "L/10 Tuýp", "price": 47000}, {"code": "THERAV", "name": "Theralene (Viên)", "unit": "Hộp", "price": 102000}, {"code": "TMBPL", "name": "Thiên Môn Bổ Phổi >", "unit": "Chai", "price": 72000}, {"code": "TMBPVICO", "name": "Thiên môn bổ phổi Thùy mẫu chai 280ml Vicophar", "unit": "Lọ", "price": 65000}, {"code": "3MOCT", "name": "Thun 3 Móc (QM)", "unit": "Cuộn", "price": 15000}, {"code": "HOPH", "name": "Tía Tô", "unit": "Chai", "price": 28000}, {"code": "TOMA", "name": "Tomax", "unit": "L/10 Tuýp", "price": 80000}, {"code": "TOTR", "name": "Totri - TPC", "unit": "Hộp", "price": 107500}, {"code": "TVK", "name": "Tràng Vị Khang", "unit": "Hộp", "price": 44000}, {"code": "UNIKIDS", "name": "Unikids kẽm chai/50g t/96", "unit": "Chai", "price": 25000}, {"code": "URGO102", "name": "Urgo 102M", "unit": "Hộp", "price": 70000}, {"code": "URGOCN", "name": "Urgo Cuộn <", "unit": "Cuộn", "price": 17000}, {"code": "VAST", "name": "Vastex (HG)", "unit": "Hộp", "price": 24000}, {"code": "HOBPBT", "name": "Viên ngậm ho bổ phế Bảo Thanh (20 vỉ/hộp)", "unit": "Hộp", "price": 12000}, {"code": "VIT3BG", "name": "Vitamin 3B Gold", "unit": "Hộp", "price": 55000}, {"code": "VITADG", "name": "Vitamin A -D Gold", "unit": "Hộp", "price": 40000}, {"code": "C250C", "name": "Vitamin C250Mg", "unit": "Chai", "price": 25000}, {"code": "C500CVDF", "name": "Vitamin C500 Chai (VDF)", "unit": "Chai", "price": 35000}, {"code": "VITPP", "name": "VITAMIN PP", "unit": "Hộp", "price": 30000}, {"code": "VCOOL", "name": "Vrohto - Cool", "unit": "Chai", "price": 60000}, {"code": "VVITA", "name": "Vrohto - Vitamin (8 Koi lại)", "unit": "Chai", "price": 53000}, {"code": "VROHTO", "name": "Vrohto - Xanh", "unit": "Chai", "price": 59000}, {"code": "VROHTO", "name": "Vrohto - Xanh Nhật", "unit": "Chai", "price": 48000}, {"code": "WA1", "name": "Waisan", "unit": "H/10 Vĩ", "price": 80000}, {"code": "XIHL", "name": "Xisat Hồng >", "unit": "Chai", "price": 28000}, {"code": "XIXL", "name": "Xisat Xanh >", "unit": "Chai", "price": 26000}, {"code": "XNBHC", "name": "Xuân Nữ BH Cao", "unit": "Chai", "price": 55000}, {"code": "ZUCHI", "name": "Zuchi Xịt", "unit": "Chai", "price": 24500}];
+let products = loadProducts();
+let selected = null;
+let order = [];
+let editingIndex = -1;
+let currentUser = null;
+let users = loadUsers();
+users = users.map(u=>({...u,fullName:(u.fullName||u.username||'').trim()})); persistUsers();
+
+const search = document.getElementById('search');
+const suggest = document.getElementById('suggest');
+
+function money(n){ return new Intl.NumberFormat('vi-VN').format(Math.round(n)) + ' đ'; }
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
+
+
+function loadProducts(){
+  try{
+    const saved=localStorage.getItem('nt_hienhoa_products');
+    if(saved) return JSON.parse(saved);
+  }catch(e){}
+  return defaultProducts.map(p=>({...p}));
+}
+function persistProducts(){
+  localStorage.setItem('nt_hienhoa_products',JSON.stringify(products));
+}
+function loadUsers(){
+  try{
+    const saved=localStorage.getItem('nt_hienhoa_users');
+    if(saved) return JSON.parse(saved);
+  }catch(e){}
+  return [
+    {username:'admin',fullName:'Quản trị viên',password:'123456',role:'admin'},
+    {username:'user',fullName:'Người dùng',password:'123456',role:'user'}
+  ];
+}
+function persistUsers(){
+  localStorage.setItem('nt_hienhoa_users',JSON.stringify(users));
+}
+function login(){
+  const u=document.getElementById('loginUser').value.trim();
+  const p=document.getElementById('loginPass').value;
+  const account=users.find(x=>x.username===u && x.password===p);
+  if(account){
+    currentUser={username:account.username,role:account.role};
+    sessionStorage.setItem('nt_hienhoa_login',account.username);
+    document.getElementById('loginOverlay').style.display='none';
+    updateUserUI();
+    hideAdmin(); hideUserManagement();
+  }else{
+    document.getElementById('loginError').textContent='Tên đăng nhập hoặc mật khẩu không đúng.';
+  }
+}
+function updateUserUI(){
+  if(!currentUser)return;
+  const roleText=currentUser.role==='admin'?'ADMIN':'USER';
+  const displayUser=users.find(u=>u.username===currentUser.username)||currentUser;
+  document.getElementById('currentUser').innerHTML='👤 '+esc(displayUser.fullName||'')+' <span class="role-badge">'+(displayUser.role==='admin'?'ADMIN':'USER')+'</span>';
+  const isAdmin=currentUser.role==='admin';
+  document.getElementById('adminBtn').style.display=isAdmin?'inline-block':'none';
+  document.getElementById('userManageBtn').style.display=isAdmin?'inline-block':'none';
+}
+function logout(){
+  currentUser=null;
+  sessionStorage.removeItem('nt_hienhoa_login');
+  document.getElementById('adminPanel').style.display='none';
+  document.getElementById('userManagement').style.display='none';
+  document.getElementById('loginOverlay').style.display='flex';
+  document.getElementById('loginUser').value='';
+  document.getElementById('loginPass').value='';
+}
+function requireAdmin(){
+  if(!currentUser || currentUser.role!=='admin'){
+    alert('Bạn không có quyền thực hiện chức năng này. Chỉ Admin mới được phép.');
+    return false;
+  }
+  return true;
+}
+function goHome(){
+  // Trả toàn bộ giao diện về form đặt hàng ban đầu.
+  hideAdmin();
+  hideUserManagement();
+
+  order=[];
+  selected=null;
+  editingIndex=-1;
+
+  document.getElementById('search').value='';
+  document.getElementById('name').value='';
+  document.getElementById('unit').value='';
+  document.getElementById('price').value='';
+  document.getElementById('qty').value=1;
+  document.getElementById('info').style.display='none';
+  document.getElementById('suggest').style.display='none';
+  showPrice=true;
+  showTotal=true;
+
+  render();
+  window.scrollTo({top:0,behavior:'smooth'});
+  document.getElementById('search').focus();
+}
+
+function showAdmin(){
+  if(!requireAdmin())return;
+  // Chỉ mở một cửa sổ quản lý tại một thời điểm.
+  hideUserManagement();
+  document.getElementById('adminPanel').style.display='block';
+  renderAdmin();
+  document.getElementById('adminPanel').scrollIntoView({behavior:'smooth'});
+}
+function hideAdmin(){document.getElementById('adminPanel').style.display='none';}
+function showUserManagement(){
+  if(!requireAdmin())return;
+  // Chỉ mở một cửa sổ quản lý tại một thời điểm.
+  hideAdmin();
+  document.getElementById('userManagement').style.display='block';
+  renderUsers();
+  document.getElementById('userManagement').scrollIntoView({behavior:'smooth'});
+}
+function hideUserManagement(){document.getElementById('userManagement').style.display='none';}
+function saveUser(){
+  if(!requireAdmin())return;
+  const username=document.getElementById('newUsername').value.trim();
+  const fullName=document.getElementById('newFullName').value.trim();
+  const password=document.getElementById('newPassword').value;
+  const role=document.getElementById('newRole').value;
+  if(!username||!fullName||!password){alert('Vui lòng nhập tên đăng nhập, Full name và mật khẩu.');return;}
+  if(users.some(x=>x.username===username)){alert('Tên đăng nhập đã tồn tại.');return;}
+  users.push({username,fullName,password,role});
+  persistUsers(); renderUsers();
+  document.getElementById('newUsername').value='';
+  document.getElementById('newFullName').value='';
+  document.getElementById('newPassword').value='';
+  alert('Đã tạo tài khoản '+username+'.');
+}
+function renderUsers(){
+  const body=document.getElementById('userList'); if(!body)return;
+  body.innerHTML=users.map((u,i)=>`<tr>
+    <td>${i+1}</td><td><b>${esc(u.username)}</b></td><td>${esc(u.fullName||u.username)}</td>
+    <td><span class="role-badge">${u.role==='admin'?'ADMIN':'USER'}</span></td>
+    <td><button onclick="changeUserFullName(${i})">Đổi Full name</button>
+      <button onclick="changeUserPassword(${i})">Đổi mật khẩu</button>
+      <button class="danger" onclick="deleteUser(${i})">Xóa</button></td>
+  </tr>`).join('');
+}
+function changeUserFullName(i){
+  if(!requireAdmin())return;
+  const u=users[i];
+  const name=prompt('Nhập Full name cho '+u.username+':',u.fullName||'');
+  if(name===null)return;
+  if(!name.trim()){alert('Full name không được để trống.');return;}
+  users[i].fullName=name.trim();
+  persistUsers(); renderUsers();
+  if(currentUser && currentUser.username===u.username) updateUserUI();
+  alert('Đã cập nhật Full name.');
+}
+
+function changeUserPassword(i){
+  if(!requireAdmin())return;
+  const u=users[i];
+  const pass=prompt('Nhập mật khẩu mới cho '+u.username+':');
+  if(pass===null)return;
+  if(!pass){alert('Mật khẩu không được để trống.');return;}
+  users[i].password=pass; persistUsers();
+  alert('Đã đổi mật khẩu.');
+}
+function deleteUser(i){
+  if(!requireAdmin())return;
+  const u=users[i];
+  if(u.username==='admin'){alert('Không thể xóa tài khoản admin mặc định.');return;}
+  if(u.username===currentUser.username){alert('Không thể xóa tài khoản đang đăng nhập.');return;}
+  if(confirm('Xóa tài khoản '+u.username+'?')){
+    users.splice(i,1);persistUsers();renderUsers();
+  }
+}
+function resetAdminForm(){
+  editingIndex=-1;
+  ['adminCode','adminName','adminUnit','adminPrice'].forEach(id=>document.getElementById(id).value='');
+}
+function saveProduct(){
+  if(!requireAdmin())return;
+  const code=document.getElementById('adminCode').value.trim();
+  const name=document.getElementById('adminName').value.trim();
+  const unit=document.getElementById('adminUnit').value.trim();
+  const price=Number(document.getElementById('adminPrice').value);
+  if(!code||!name||!unit||!Number.isFinite(price)||price<0){
+    alert('Vui lòng nhập đầy đủ mã hàng, tên hàng, ĐVT và đơn giá hợp lệ.');return;
+  }
+  const p={code,name,unit,price};
+  if(editingIndex>=0) products[editingIndex]=p;
+  else products.push(p);
+  persistProducts();
+  resetAdminForm();
+  renderAdmin();
+  alert('Đã lưu sản phẩm.');
+}
+function editProduct(i){
+  if(!requireAdmin())return;
+  const p=products[i]; editingIndex=i;
+  document.getElementById('adminCode').value=p.code;
+  document.getElementById('adminName').value=p.name;
+  document.getElementById('adminUnit').value=p.unit;
+  document.getElementById('adminPrice').value=p.price;
+  document.getElementById('adminPanel').scrollIntoView({behavior:'smooth'});
+}
+function deleteProduct(i){
+  if(!requireAdmin())return;
+  if(!confirm('Xóa sản phẩm này khỏi danh mục?')) return;
+  products.splice(i,1); persistProducts(); renderAdmin();
+}
+function renderAdmin(){
+  const body=document.getElementById('adminProducts');
+  if(!body)return;
+  body.innerHTML=products.map((p,i)=>`<tr>
+    <td>${i+1}</td><td><b>${esc(p.code)}</b></td><td>${esc(p.name)}</td>
+    <td>${esc(p.unit)}</td><td class="num">${money(p.price)}</td>
+    <td><button onclick="editProduct(${i})">Sửa</button>
+        <button class="danger" onclick="deleteProduct(${i})">Xóa</button></td>
+  </tr>`).join('');
+}
+function exportProducts(){
+  if(!requireAdmin())return;
+  const rows=[['Mã hàng','Tên hàng','ĐVT','Đơn giá'],...products.map(p=>[p.code,p.name,p.unit,p.price])];
+  const csv='\ufeff'+rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\r\n');
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='Danh_muc_NT_Hien_Hoa.csv';a.click();URL.revokeObjectURL(a.href);
+}
+function importProducts(event){
+  if(!requireAdmin())return;
+  const file=event.target.files[0]; if(!file)return;
+  const reader=new FileReader();
+  reader.onload=()=>{
+    try{
+      const lines=reader.result.replace(/^\ufeff/,'').split(/\r?\n/).filter(Boolean);
+      const rows=lines.slice(1).map(line=>{
+        const vals=[]; const re=/"([^"]*(?:""[^"]*)*)"/g; let m;
+        while((m=re.exec(line))) vals.push(m[1].replace(/""/g,'"'));
+        if(vals.length<4) return null;
+        return {code:vals[0].trim(),name:vals[1].trim(),unit:vals[2].trim(),price:Number(vals[3])};
+      }).filter(p=>p&&p.code&&p.name&&p.unit&&Number.isFinite(p.price));
+      if(!rows.length) throw new Error();
+      if(confirm(`Nhập ${rows.length} sản phẩm và thay thế danh mục hiện tại?`)){
+        products=rows; persistProducts(); renderAdmin();
+      }
+    }catch(e){alert('Không đọc được file CSV. Hãy dùng file xuất từ hệ thống.');}
+    event.target.value='';
+  };
+  reader.readAsText(file,'utf-8');
+}
+function resetProducts(){
+  if(!requireAdmin())return;
+  if(!confirm('Khôi phục toàn bộ danh mục gốc? Dữ liệu bạn đã thêm/sửa sẽ mất.'))return;
+  products=defaultProducts.map(p=>({...p})); persistProducts(); renderAdmin();
+}
+
+function findMatches(q){
+  q=q.trim().toLowerCase();
+  if(!q) return [];
+  return products.filter(p=>
+    p.code.toLowerCase().includes(q) || p.name.toLowerCase().includes(q)
+  ).slice(0,30);
+}
+function showSuggestions(){
+  const matches=findMatches(search.value);
+  if(!matches.length){suggest.style.display='none';return;}
+  suggest.innerHTML=matches.map((p,i)=>
+    `<div data-i="${products.indexOf(p)}"><b>${esc(p.code)}</b> — ${esc(p.name)}
+    <span class="small"> | ${esc(p.unit)} | ${money(p.price)}</span></div>`).join('');
+  suggest.style.display='block';
+}
+search.addEventListener('input',showSuggestions);
+search.addEventListener('keydown',e=>{
+  if(e.key==='Enter'){
+    const m=findMatches(search.value);
+    if(m.length) selectProduct(m[0]);
+  }
+});
+suggest.addEventListener('click',e=>{
+  const d=e.target.closest('[data-i]');
+  if(d) selectProduct(products[Number(d.dataset.i)]);
+});
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.searchwrap')) suggest.style.display='none';
+});
+
+function selectProduct(p){
+  selected=p; search.value=p.code; document.getElementById('name').value=p.name;
+  document.getElementById('unit').value=p.unit; document.getElementById('price').value=money(p.price);
+  document.getElementById('qty').focus(); suggest.style.display='none';
+  const info=document.getElementById('info');
+  const same=products.filter(x=>x.code.toLowerCase()===p.code.toLowerCase());
+  if(same.length>1){info.style.display='block';info.innerHTML=`Mã <b>${esc(p.code)}</b> có ${same.length} sản phẩm. Bạn đang chọn: <b>${esc(p.name)}</b>.`;}
+  else info.style.display='none';
+}
+function addItem(){
+  if(!selected){alert('Vui lòng nhập và chọn mã hàng trước.');search.focus();return;}
+  const q=parseFloat(document.getElementById('qty').value)||0;
+  if(q<=0){alert('Số lượng phải lớn hơn 0.');return;}
+  const key=products.indexOf(selected);
+  const existing=order.find(x=>x.key===key);
+  if(existing) existing.qty+=q; else order.push({key,product:selected,qty:q});
+  render(); document.getElementById('qty').value=1; search.value=''; selected=null;
+  document.getElementById('name').value='';document.getElementById('unit').value='';document.getElementById('price').value='';
+  document.getElementById('info').style.display='none';search.focus();
+}
+function render(){
+  const el=document.getElementById('order');
+  if(!order.length){
+    el.innerHTML='<div class="empty">Chưa có sản phẩm trong đơn hàng.</div>';
+    document.getElementById('grandTotal').textContent='Tổng: 0 đ';
+    applyPriceVisibility();
+    return;
+  }
+  el.innerHTML=`<div style="overflow:auto"><table><thead><tr>
+  <th>STT</th><th>Mã hàng</th><th>Tên hàng</th><th>ĐVT</th>
+  <th class="num price-col">Đơn giá</th><th>SL</th>
+  <th class="num total-col">Thành tiền</th><th></th>
+  </tr></thead><tbody>${order.map((x,i)=>`<tr>
+  <td>${i+1}</td><td><b>${esc(x.product.code)}</b></td><td>${esc(x.product.name)}</td><td>${esc(x.product.unit)}</td>
+  <td class="num price-col">${money(x.product.price)}</td>
+  <td><input class="qty" type="number" min="1" value="${x.qty}" onchange="changeQty(${i},this.value)"></td>
+  <td class="num total-col">${money(x.qty*x.product.price)}</td>
+  <td><button class="danger" onclick="removeItem(${i})">Xóa</button></td></tr>`).join('')}</tbody></table></div>`;
+  document.getElementById('grandTotal').textContent='Tổng: '+money(order.reduce((s,x)=>s+x.qty*x.product.price,0));
+  applyPriceVisibility();
+}
+
+let showPrice = true;
+let showTotal = true;
+
+function applyPriceVisibility(){
+  const orderEl=document.getElementById('order');
+  orderEl.classList.toggle('hide-price',!showPrice);
+  orderEl.classList.toggle('hide-total',!showTotal);
+
+  const priceBtn=document.getElementById('togglePriceBtn');
+  const totalBtn=document.getElementById('toggleTotalBtn');
+  if(priceBtn){
+    priceBtn.textContent=showPrice?'👁 Ẩn Đơn giá':'👁 Hiện Đơn giá';
+    priceBtn.classList.toggle('active',showPrice);
+  }
+  if(totalBtn){
+    totalBtn.textContent=showTotal?'👁 Ẩn Thành tiền':'👁 Hiện Thành tiền';
+    totalBtn.classList.toggle('active',showTotal);
+  }
+}
+
+function togglePrice(){
+  showPrice=!showPrice;
+  applyPriceVisibility();
+}
+
+function toggleTotal(){
+  showTotal=!showTotal;
+  applyPriceVisibility();
+}
+
+function changeQty(i,v){let q=parseFloat(v)||1;order[i].qty=Math.max(1,q);render();}
+function removeItem(i){order.splice(i,1);render();}
+function clearOrder(){if(order.length && confirm('Xóa toàn bộ đơn hàng?')){order=[];render();}}
+function exportCSV(){
+  if(!order.length){alert('Đơn hàng đang trống.');return;}
+  let rows=[['STT','Mã hàng','Tên hàng','ĐVT','Đơn giá','Số lượng','Thành tiền']];
+  order.forEach((x,i)=>rows.push([i+1,x.product.code,x.product.name,x.product.unit,x.product.price,x.qty,x.qty*x.product.price]));
+  rows.push(['','','','','','TỔNG',order.reduce((s,x)=>s+x.qty*x.product.price,0)]);
+  const csv='\ufeff'+rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\r\n');
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='Don_hang.csv';a.click();URL.revokeObjectURL(a.href);
+}
+function printOrder(){
+  if(!order.length){alert('Đơn hàng đang trống.');return;}
+  const total=order.reduce((s,x)=>s+x.qty*x.product.price,0);
+  const priceHead=showPrice?'Đơn giá':'';
+  const totalHead=showTotal?'Thành tiền':'';
+  const priceCells=showPrice?order.map(()=>true):[];
+  const w=window.open('','_blank');
+  w.document.write(`<html><head><title>Phiếu đặt hàng</title><style>
+  body{font-family:Arial;padding:25px}h2{text-align:center}table{width:100%;border-collapse:collapse}th,td{border:1px solid #999;padding:7px}th{background:#eee}.r{text-align:right}.t{text-align:right;font-size:18px;font-weight:bold;margin-top:15px}
+  .note-cell{min-width:150px;width:18%;height:28px}
+  .print-header{display:flex;justify-content:flex-end;margin-bottom:10px}
+  .print-datetime{text-align:right;font-size:13px;line-height:1.5}
+  .signature-area{display:flex;justify-content:flex-end;margin-top:28px}
+  .signature-box{width:220px;text-align:center;line-height:1.5}
+  .signature-title{font-weight:bold}
+  .signature-space{height:58px}
+  .signature-name{font-weight:bold}
+  </style></head><body>
+  <div class="print-header"><div class="print-datetime">Ngày lập: ${new Date().toLocaleDateString('vi-VN')}<br>Giờ lập: ${new Date().toLocaleTimeString('vi-VN')}</div></div>
+  <h2>PHIẾU ĐẶT HÀNG QUẦY THUỐC MAI XUÂN</h2><table><tr><th>STT</th><th>Mã hàng</th><th>Tên hàng</th><th>ĐVT</th>${showPrice?'<th>Đơn giá</th>':''}<th>SL</th>${showTotal?'<th>Thành tiền</th>':''}<th>Ghi chú</th></tr>
+  ${order.map((x,i)=>`<tr><td>${i+1}</td><td>${esc(x.product.code)}</td><td>${esc(x.product.name)}</td><td>${esc(x.product.unit)}</td>${showPrice?`<td class="r">${money(x.product.price)}</td>`:''}<td>${x.qty}</td>${showTotal?`<td class="r">${money(x.qty*x.product.price)}</td>`:''}<td class="note-cell"></td></tr>`).join('')}
+  </table>${showTotal?`<div class="t">TỔNG CỘNG: ${money(total)}</div>`:''}
+  <div class="signature-area">
+    <div class="signature-box">
+      <div class="signature-title">Người lập</div>
+      <div class="signature-space"></div>
+      <div class="signature-name">${esc((users.find(u=>u.username===currentUser?.username)||currentUser)?.fullName||'')}</div>
+    </div>
+  </div>
+  </body></html>`);
+  w.document.close();w.print();
+}
+render();
+const savedLogin=sessionStorage.getItem('nt_hienhoa_login');
+if(savedLogin){
+  const account=users.find(x=>x.username===savedLogin);
+  if(account){
+    currentUser={username:account.username,role:account.role};
+    document.getElementById('loginOverlay').style.display='none';
+    updateUserUI();
+    renderAdmin(); renderUsers();
+  }else sessionStorage.removeItem('nt_hienhoa_login');
+}
+document.getElementById('loginPass').addEventListener('keydown',e=>{if(e.key==='Enter')login();});
+</script>
+</body></html>
